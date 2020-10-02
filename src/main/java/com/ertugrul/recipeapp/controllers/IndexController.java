@@ -12,7 +12,6 @@ import java.util.Optional;
 @Slf4j
 public class IndexController {
 
-
     private final RecipeService recipeService;
 
     public IndexController(RecipeService recipeService) {
