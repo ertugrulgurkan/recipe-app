@@ -4,6 +4,7 @@ import com.ertugrul.recipeapp.commands.RecipeCommand;
 import com.ertugrul.recipeapp.converters.RecipeCommandToRecipe;
 import com.ertugrul.recipeapp.converters.RecipeToRecipeCommand;
 import com.ertugrul.recipeapp.domain.Recipe;
+import com.ertugrul.recipeapp.exceptions.NotFoundException;
 import com.ertugrul.recipeapp.repositories.RecipeRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -101,5 +102,16 @@ public class RecipeServiceImplTest {
 
         //then
         verify(recipeRepository, times(1)).deleteById(anyLong());
+    }
+
+
+    @Test(expected = NotFoundException.class)
+    public void getRecipeByIdTestNotFound() throws Exception{
+        Optional<Recipe> recipeOptional = Optional.empty();
+        when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
+
+        Recipe recipeReturned = recipeService.findById(1L);
+
+        // should throw an exception
     }
 }
