@@ -2,6 +2,7 @@ package com.ertugrul.recipeapp.controllers;
 
 import com.ertugrul.recipeapp.commands.RecipeCommand;
 import com.ertugrul.recipeapp.domain.Recipe;
+import com.ertugrul.recipeapp.exceptions.NotFoundException;
 import com.ertugrul.recipeapp.services.RecipeService;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +36,9 @@ public class RecipeControllerTest {
 
         controller = new RecipeController(recipeService);
 
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+                .setControllerAdvice(new ControllerExceptionHandler())
+                .build();
     }
 
     @Test
@@ -100,5 +103,24 @@ public class RecipeControllerTest {
                 .andExpect(view().name("redirect:/"));
 
         verify(recipeService, times(1)).deleteById(anyLong());
+    }
+
+    @Test
+    public void testGetRecipeNotFound() throws Exception {
+
+        when(recipeService.findById(anyLong())).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(get("/recipe/1/show"))
+                .andExpect(status().isNotFound())
+                .andExpect(view().name("404error"));
+    }
+
+    @Test
+    public void testGetRecipeNumberFormatException() throws Exception {
+
+        mockMvc.perform(get("/recipe/asdf/show"))
+                .andExpect(status().isBadRequest())
+                .andExpect(view().name("400error"));
+
     }
 }
