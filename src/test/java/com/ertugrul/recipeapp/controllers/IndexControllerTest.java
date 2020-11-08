@@ -46,7 +46,8 @@ public class IndexControllerTest {
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(indexController).build();
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("index"));    }
+                .andExpect(view().name("index"));
+    }
 
 
     @Test
